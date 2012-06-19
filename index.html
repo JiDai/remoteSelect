@@ -6,17 +6,36 @@
 	<link rel="stylesheet" href="styles.css" type="text/css" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.jd-remote-select.js"></script>
+	<script type="text/javascript" src="jquery.metadata.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function()
 		{
-			$('#jd-remote-select').jdRemoteSelect()
+			$('.remote-select').jdRemoteSelect()
 		});
 	</script>
 </head>
 
 <body>
 <div>
-<select id="jd-remote-select">
-</select>
+
+	<h2>Simple select</h2>
+	<p>
+		<select id="remoteSelect1" name="country" class="remote-select { data: { url: 'countries.json.php' }, keepFirstOption:true, valueProperty: 'code'}">
+			<option value=""></option>
+		</select>
+	</p>
+					
+	<h2>Select avec sous-select</h2>
+	<p>
+		<select id="remoteSelect2" name="country" class="remote-select { data: { url: 'countries.json.php' }, keepFirstOption:true, valueProperty: 'code', subSelectTarget: '#remoteSelect3'}">
+			<option value=""></option>
+		</select>
+	</p>
+	<p>
+		<select id="remoteSelect3" name="zone" class="remote-sub-select { data: { url: 'zones.json.php' }, keepFirstOption:true, autoLoad:false, valueProperty: 'code'}">
+			<option value=""></option>
+		</select>
+	</p>
+
 </div>
 </body>
