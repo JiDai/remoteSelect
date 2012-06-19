@@ -2,7 +2,7 @@
 
 Remote Select form plugin
 Copyright © 2012 Jordi Dosne
-http://www.Dosne.net
+http://www.dosne.net
 
 Requires jQuery 1.4 or newer
 Requires jQuery Metadata
@@ -43,7 +43,8 @@ Enjoy!
 				// If the plugin hasn't been initialized yet
 				if ( !$.data(this, 'jdRemoteSelectParams') )
 				{
-					var params = $.extend({}, $.jdRemoteSelect.defaults, $this.metadata(), options);
+					var o = $.parseJSON($this.attr('data-remote-select'));
+					var params = $.extend({}, $.jdRemoteSelect.defaults, o, options);
 					params.data.method = "get";
 					
 					if( params.subSelectTarget !== undefined && params.subSelectTarget !== "" ) {
@@ -76,61 +77,63 @@ Enjoy!
 				url : params.data.url,
 				dataType: 'json',
 				data : params.data,
-				async: false
-			}).responseText);
-
-			var len = result.length;
-			if( result.length === 0 )
-			{
-				$this.hide();
-				return;
-			}
-			
-			if( params.keepFirstOption === true ) {
-				$this.find('option:gt(0)').remove(); }
-			else if( params.keepLastOption === true ) {
-				$this.find('option:lt('+($this.find('option').length-1)+')').remove(); }
-			else {
-				$this.find('option').remove(); }
-			
-			// Populate select
-			for( var i = 0; i < len; i++ )
-			{
-				$this.append("<option value="+result[i][params.valueProperty]+">"+result[i][params.labelProperty]+"</option>");
-			}
-			
-			// Set default Value
-			if( params.defaultValue !== '' )
-			{
-				$this.find('option:selected').removeAttr('selected');
-				$this.find('option[value='+params.defaultValue+']').attr('selected', 'selected');
-			}
-			
-			// Show the select
-			$this.removeAttr('disabled');
-			$this.show();
-
-			// If sub select is set, initialize it and link changeEvent to it
-			if( params.subSelect !== null && params.subSelect.length > 0 )
-			{
-				var sub = params.subSelect;
-				sub.jdRemoteSelect({autoLoad:false});
-				sub.hide();
-				$this.bind('change', function(e)
+				async: true,
+				success: function(result)
 				{
-					e.preventDefault();
-					var $this = $(e.target);
-					var dataSubSelect = $.data(sub[0], 'jdRemoteSelectParams').data[$this.attr('name')] = $this.val();
-					methods.loadData.apply(sub, []);
-				});
-				if( params.defaultValue !== undefined && params.defaultValue !== '' )
-				{
-					var dataSubSelect = $.data(sub[0], 'jdRemoteSelectParams').data[$this.attr('name')] = $this.val();
-					methods.loadData.apply(sub, []);
+					var len = result.length;
+					if( result.length === 0 )
+					{
+						$this.hide();
+						return;
+					}
+					
+					if( params.keepFirstOption === true ) {
+						$this.find('option:gt(0)').remove(); }
+					else if( params.keepLastOption === true ) {
+						$this.find('option:lt('+($this.find('option').length-1)+')').remove(); }
+					else {
+						$this.find('option').remove(); }
+					
+					// Populate select
+					for( var i = 0; i < len; i++ )
+					{
+						$this.append("<option value="+result[i][params.valueProperty]+">"+result[i][params.labelProperty]+"</option>");
+					}
+					
+					// Set default Value
+					if( params.defaultValue !== '' )
+					{
+						$this.find('option:selected').removeAttr('selected');
+						$this.find('option[value='+params.defaultValue+']').attr('selected', 'selected');
+					}
+					
+					// Show the select
+					$this.removeAttr('disabled');
+					$this.show();
+		
+					// If sub select is set, initialize it and link changeEvent to it
+					if( params.subSelect !== null && params.subSelect.length > 0 )
+					{
+						var sub = params.subSelect;
+						sub.jdRemoteSelect({autoLoad:false});
+						sub.hide();
+						$this.bind('change', function(e)
+						{
+							e.preventDefault();
+							var $this = $(e.target);
+							var dataSubSelect = $.data(sub[0], 'jdRemoteSelectParams').data[$this.attr('name')] = $this.val();
+							methods.loadData.apply(sub, []);
+						});
+						if( params.defaultValue != undefined && params.defaultValue != '' )
+						{
+							if( $.data(sub[0], 'jdRemoteSelectParams')) {
+								$.data(sub[0], 'jdRemoteSelectParams').data[$this.attr('name')] = $this.val(); }
+							methods.loadData.apply(sub, []);
+						}
+					}
 				}
-			}
-			$this = null;
-			params = null;
+			}));
+
 		},
 		set : function( key, value )
 		{

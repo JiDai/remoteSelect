@@ -5,12 +5,20 @@
 	<title>jQuery Remote Select Demo</title>
 	<link rel="stylesheet" href="styles.css" type="text/css" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="jquery.jd-remote-select.js"></script>
+	<script type="text/javascript" src="jquery.jd-remote-select.min.js"></script>
 	<script type="text/javascript" src="jquery.metadata.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function()
 		{
-			$('.remote-select').jdRemoteSelect()
+			$('#remoteSelect1').jdRemoteSelect({ 
+				data: { 
+					url: 'countries.json.php'
+				}, 
+				keepFirstOption: true, 
+			});
+			$('#remoteSelect2').jdRemoteSelect()
+			$('#remoteSelect3').jdRemoteSelect()
+			$('#remoteSelect5').jdRemoteSelect()
 		});
 	</script>
 </head>
@@ -18,24 +26,42 @@
 <body>
 <div>
 
-	<h2>Simple select</h2>
+	<h1>Remote Select Example</h1>
+	
+	<h2>Simple SELECT</h2>
 	<p>
-		<select id="remoteSelect1" name="country" class="remote-select { data: { url: 'countries.json.php' }, keepFirstOption:true, valueProperty: 'code'}">
+		<select id="remoteSelect1" name="country" class="remote-select ">
 			<option value=""></option>
 		</select>
 	</p>
+	
+	<h2>Simple SELECT avec metadatas</h2>
+	<p>
+		<em>Les metadatas doivent être au format JSON.</em><br/>
+		<select id="remoteSelect2" name="country" class="remote-select" data-remote-select='{ "data": { "url": "countries.json.php" }, "keepFirstOption": true, "valueProperty": "code"}'>
+			<option value=""></option>
+		</select>
+	</p>
+	
 					
-	<h2>Select avec sous-select</h2>
+	<h2>SELECT avec second SELECT lié</h2>
 	<p>
-		<select id="remoteSelect2" name="country" class="remote-select { data: { url: 'countries.json.php' }, keepFirstOption:true, valueProperty: 'code', subSelectTarget: '#remoteSelect3'}">
+		<em>Sélectionnez la France, l'Espagne ou l'Italie par exemple pour voir appaître un nouveau select dont le contenu sera affecté par la valeur du premier.</em><br/>
+		<select id="remoteSelect3" name="country" class="remote-select" data-remote-select='{ "data": { "url": "countries.json.php" }, "keepFirstOption":true, "valueProperty": "code", "subSelectTarget": "#remoteSelect4"}'>
 			<option value=""></option>
 		</select>
 	</p>
 	<p>
-		<select id="remoteSelect3" name="zone" class="remote-sub-select { data: { url: 'zones.json.php' }, keepFirstOption:true, autoLoad:false, valueProperty: 'code'}">
+		<select id="remoteSelect4" name="zone" class="remote-sub-select"" data-remote-select='{ "data": { "url": "zones.json.php" }, "keepFirstOption":true, "autoLoad":false, "valueProperty": "code"}'>
 			<option value=""></option>
 		</select>
 	</p>
 
+	<h2>Simple SELECT avec valeur par défaut</h2>
+	<p>
+		<select id="remoteSelect5" name="country" class="remote-select" data-remote-select='{ "data": { "url": "countries.json.php" }, "keepFirstOption": true, "valueProperty": "code", "defaultValue": "FR"}'>
+			<option value=""></option>
+		</select>
+	</p>
 </div>
 </body>
